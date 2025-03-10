@@ -1,6 +1,18 @@
 {
 	"enabled_classes": [
-
+		"Node",
+		"MainLoop",
+		"DisplayServer",
+		"Window",
+		"GDExtension",
+		"StyleBox",
+		"VideoStream",
+		"CanvasItem",
+		"Mesh",
+		"Material",
+		"VideoStreamPlayback",
+		"PlaceholderTexture2D",
+		"OS"
 	],
 	"type": "feature_profile"
 }

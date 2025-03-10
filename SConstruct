@@ -37,37 +37,9 @@ Run the following command to download godot-cpp:
 env = localEnv.Clone()
 env = SConscript("godot-cpp/SConstruct", {"env": env, "customs": customs})
 
-# Get commit hash and version tag
-
-commit_hash = ""
-commit_tag = ""
-
-try:
-    commit_hash = subprocess.check_output(
-        ["git", "rev-parse", "HEAD"]
-    ).strip().decode("utf-8")
-except subprocess.CalledProcessError:
-    print("Failed to get the latest commit hash.")
-
-try:
-    commit_tag = subprocess.check_output(
-        ["git", "describe", "--tags", "--exact-match"]
-    ).strip().decode("utf-8")
-except subprocess.CalledProcessError:
-    print("No tag found for the current commit.")
-
 # Sources
-env.Append(CPPPATH=["src/", "ndi/"])
-sources = Glob(
-    "src/*.cpp",
-    exclude=["src/initialize.cpp", "src/ndi_version_check.cpp"]
-)
-
-# These are included seperately to allow for the commit hash and
-# version tag to be included without invalidating cache for every file
-sources += env.SharedObject(["src/initialize.cpp", "src/ndi_version_check.cpp"], CPPDEFINES={
-    "GIT_COMMIT_HASH": f'\\"{commit_hash}\\"', "GIT_COMMIT_TAG": f'\\"{commit_tag}\\"'
-})
+env.Append(CPPPATH=["src/"])
+sources = Glob("src/*.cpp")
 
 # Add docs
 if env["target"] in ["editor", "template_debug"]:
@@ -77,14 +49,6 @@ if env["target"] in ["editor", "template_debug"]:
         sources.append(doc_data)
     except AttributeError:
         print("Not including class reference as we're targeting a pre-4.3 baseline.")
-
-# Include Windows SDK
-if env["platform"] == "windows":
-    env.Append(LIBS=["ws2_32"])
-
-# Disable deprecated warnings
-if env["platform"] != "windows" or env["use_mingw"]:
-    env.Append(CCFLAGS=["-Wno-deprecated-declarations"])
 
 # Set paths
 file = "{}{}{}".format(libname, env["suffix"], env["SHLIBSUFFIX"])
