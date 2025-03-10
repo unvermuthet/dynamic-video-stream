@@ -10,5 +10,5 @@ config_version=5
 
 [application]
 
-config/name="texture-size-changed"
+config/name="dynamic-resolution-change-mrp"
 config/features=PackedStringArray("4.5", "Forward Plus")
